@@ -1,23 +1,175 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
-  <FONT COLOR="#FFFFFF">  <h1>Очки:<div id="score"></div></h1></FONT> 
-    <meta charset="utf-8">
 
-    <title></title>
 
-      <script src="script/animation.js"></script>
-      <script src="script/canvasgame.js"></script>
-      <script src="script/keys.js"></script>
-  </head>
-  
-  <body onload="start()">
-  
-    <canvas id="myCanvas" width="1200" height="620"style="border:10px solid #FFFF00"></canvas>
+<meta charset="utf-8">
 
-	<br><br>
- <body bgcolor="#000000">
-  
- </body>
-  </body>
+<title></title>
+
+<script src="script/animation.js"></script>
+<script src="script/canvasgame.js"></script>
+<script src="script/keys.js"></script>
+<script src="script/backaudio.js"></script>
+<script type="text/javascript">
+    function vs(pokazat) {
+        document.getElementById('menu').style.display = pokazat;
+    }
+</script>
+
+</head>
+
+<body>
+
+
+<center>
+    <canvas id="myCanvas" width="1200" height="620" style="border:3px solid #AAAAAA ">
+
+
+    </canvas>
+
+    <div id="panel">
+        <div class="checkfont">sound</div> <input type="checkbox" checked="checked" id="music"/><label for="music"></label>
+
+
+        <div class="checkfont"> music on <button onclick="play_music(); return false;" class="checkfont">music on</button><br>
+                                music off<button onclick="pause_music(); return false;"class="checkfont">music off</button></div>
+
+
+            <div id="sc">
+                <script> document.write(score); </script>
+            </div>
+
+        <div id="menu">
+
+
+            <form>
+
+
+                <a href="#"><img src="resources/startbutton.png" alt="Начать Гаме" onclick="vs('none'); start() "/>
+            </form>
+
+
+        </div>
+
+
+
+</center>
+
+<br><br>
+
+<body bgcolor="#000000">
+
+</body>
+
+<div id="roditelskoe_okno">
+    <div id="okno">
+        <div class="telo-okna">
+
+
+        </div>
+    </div>
+</div>
 
 </html>
+
+<script>
+    var c = document.querySelector("#music");
+    c.onclick = function () {
+        if (c.checked) {
+
+            document.getElementById("s").play();
+
+        } else {
+            document.getElementById("s").pause();
+
+        }
+    }
+</script>
+
+
+<style>
+
+    @font-face {
+        font-family: myfont; /* Гарнитура шрифта */
+        src: url(fonts/small_font.ttf) /* Путь к файлу со шрифтом */
+    }
+
+    #sc {
+        float: right;
+        font-size: 200%;
+        font-family: myfont;
+        margin-right: 10px;
+        color:whitesmoke;
+    }
+
+    .checkfont{
+        font-family: myfont;
+        font-size: 12px;
+        color: whitesmoke;
+    }
+
+    #panel {
+        width: 100%;
+        height: 50px;
+        background: black;
+
+
+    }
+
+    #checkm {
+    / / color : white;
+    }
+
+    #roditelskoe_okno {
+        opacity: 0.89;
+    / / background : #FFF;
+        width: 100%;
+        height: 100%;
+        display: none;
+        left: 0;
+        top: 0;
+        position: fixed;
+        z-index: 100;
+    }
+
+    #menu {
+
+        background-image: url(resources/ponyBackground2.png);
+        width: 100%;
+        height: 100%;
+        color: darkblue;
+        position: absolute;
+        top: 0%;
+        font-size: 150%;
+        background-size: cover;
+
+    }
+
+    #content {
+        top: 300px; /* Расстояние от верхнего края */
+        left: 170px; /* Расстояние от левого края */
+        bottom: 0;
+        right: 0;
+    }
+
+    a {
+        color: black;
+        font-family: myfont;
+        font-weight: 600;
+        font-size: 250%;
+    }
+
+
+
+    #music:checked ~ [for="music"]:before {
+        background: #e5e5e5 linear-gradient(#dedede, #fdfdfd);
+    }
+
+    #music:checked ~ [for="music"]:after {
+        background: #25d025 radial-gradient(40% 35%, #5aef5a, #25d025 60%);
+        box-shadow: inset 0 3px 5px 1px rgba(0, 0, 0, .1),
+        0 1px 0 rgba(255, 255, 255, .4),
+        0 0 10px 2px rgba(0, 210, 0, .5);
+    }
+
+</style>

@@ -1,19 +1,20 @@
-
+/**
+ * Created by dogan on 25.11.2014.
+ */
 (function() {
-    function Sprite(url, pos, size, speed, frames, dir, once) {
-        this.pos = pos;
-        this.size = size;
-        this.speed = typeof speed === 'number' ? speed : 0;
-        this.frames = frames;
-        this._index = 0;
+    function SoundSource(url, autoplay) {
         this.url = url;
-        this.dir = dir || 'horizontal';
-        this.once = once;
+        this.autoplay = typeof autoplay === 'boolean' ? autoplay : true;
+
     };
 
     Sprite.prototype = {
-        update: function(dt) {
-            this._index += this.speed*dt;
+         // Создаём новый элемент Audio
+
+        init: function() {
+            var audio = new Audio();
+            audio.src = 'url';
+            audio.autoplay = autoplay; // Автоматически запускаем
         },
 
         render: function(ctx) {

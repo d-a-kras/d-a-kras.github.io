@@ -1,11 +1,8 @@
 //общие глобальные переменные
-var VOLUME_LEVEL=0.05;   //громкость звуков
-var SONYA_AUDIO_LEVEL=1;//громкость сони
 var lastTime;
 var gameTime = 0;
 var canvas;
 var bossHP = 1;
-var playerHP=10;
 var ctx;
 var level = 1;
 var max = 100;
@@ -19,7 +16,7 @@ var W = window.innerWidth * 0.95;//ширина окна
 var H = window.innerHeight * 0.82;//высота окна
 var timerOfImmortal = 0;
 var timeOfGod = 5000; //сколько длится бессмертие
-var timeToBoss = 5;//сколько секунд до босса
+var timeToBoss = 3;//сколько секунд до босса
 var lastBossEnemy = Date.now();
 var audio3 = new Audio(); // Создаём новый элемент Audio
 var GameOver = false;
@@ -36,9 +33,9 @@ var background = new Image();
 var background2 = new Image();
 var loserScreen = new Image();
 var sprites = new Image();
-var levelImg1 = new Image();
-var levelImg2 = new Image();
-var levelImg3 = new Image();
+var level1Img = new Image();
+var level2Img = new Image();
+var level3Img = new Image();
 var pauseImg = new Image();
 var backSound = new Audio();
 var immortalImg = new Image();
@@ -89,6 +86,8 @@ function start() {
     ctx.font = "italic 220pt Comic Sans MS";
     canvas.width = W
     canvas.height = H
+    var browser = navigator.userAgent;
+    if (browser == "mozilla") alert("МОЗИЛЛА");
     ctx.scale(W / 1200, H / 620);
     background.onload = function () {
         init();
@@ -100,9 +99,10 @@ function start() {
     sprites.src = "resources/sprite.png";
     bombImg.src = "resources/bomb.png";
     backSound.src = "resources/bSound.mp3";
-    levelImg1.src = "resources/levelchange1.jpg";
-    levelImg2.src = "resources/levelchange2.jpg";
-    levelImg3.src = "resources/levelchange3.jpg";
+    level1Img.src = "resources/levelchange1.png";
+    level2Img.src = "resources/levelchange2.png";
+    level3Img.src = "resources/levelchange3.png";
+    immortalImg.src = "resources/immortal.png";
     cowEnemy.src = "resources/cowEnemy.png";
 
 }
@@ -131,7 +131,7 @@ for (var j = 0; j < 2; j++) {//фоны
 }
 ;
 
-for (var j = 0; j < playerHP; j++) {
+for (var j = 0; j < 3; j++) {
     hitPoints.push({
         pos: [20 + 40 * j, 10],
         sprite: new Sprite(sprites, [0, 200], [40, 40])
@@ -160,7 +160,6 @@ function main() {
 function wildSonyaScream(n) {
     // if (c.checked == true) {
     var audio = new Audio(); // Создаём новый элемент Audio
-    audio.volume=SONYA_AUDIO_LEVEL;
 
     audio.src = 'resources/wildSounds/' + n + '.wav'; // Указываем путь к звуку "клика"
     audio.autoplay = true; // Автоматически запускаем
@@ -215,19 +214,19 @@ function update(dt) {
             var godBonusesLimit = 500;
             a = Math.floor(Math.random() * (max2 - 1 + 1)) + 1;
             godBonusesFrequency = Math.floor(Math.random() * godBonusesLimit) + 1;
-            if ((a == 1)&&(level>1)) {
+            if (a == 1) {
                 clouds.push({
                     pos: [1200,
                             Math.random() * (620 - 240) + 120],
                     sprite: new Sprite(sprites, [160, 80], [160, 120]) });
             }
-            if ((a == 1)&&(level>1)) {
+            if (a == 1) {
                 blackPonies.push({
                     pos: [1200,
                             Math.random() * (620 - 140) + 160],
                     sprite: new Sprite(sprites, [160, 0], [120, 40]) });
             }
-            if ((godBonusesFrequency == 1)&&(level>2)) {
+            if (godBonusesFrequency == 1) {
                 godBonuses.push({
                     pos: [1200,
                             Math.random() * (canvas.height - 140) + 160],
@@ -260,7 +259,7 @@ function update(dt) {
                 boss.push({
                     pos: [1200,
                         (310)],
-                    sprite: new Sprite(sprites, [580, 240], [100, 160]) });
+                    sprite: new Sprite(sprites, [540, 350], [205, 185]) });
             }
         }
         if ((!isGameOver) && (bossInPosition) && (Date.now() - lastFireBoss > 500)) { //босс делает пеу пеу
@@ -279,13 +278,7 @@ function update(dt) {
             else if (level == 3) {
                 bossBullets.push({ pos: [x, y],
                     dir: 'forward',
-                    sprite: new Sprite(sprites, [0, 165], [40, 20]) });
-
-            }
-            else if (level == 4) {
-                bossBullets.push({ pos: [x, y],
-                    dir: 'forward',
-                    sprite: new Sprite(sprites, [520, 40], [40, 40]) });
+                    sprite: new Sprite(sprites, [0, 240], [140, 20]) });
 
             }
             BulletSound();
@@ -300,31 +293,13 @@ function update(dt) {
         }
 
 
-        if ((bossInPosition) && (!bossLifesGain)) {//добавляем боссу хп по прибытию на позицию. разным боссам разное хп
+        if ((bossInPosition) && (!bossLifesGain)) {//добавляем боссу хп по прибытию на позицию
             bossLifesGain = true;
-            switch (level) {
-                case 1:
-                    bossHP=5;
-                    break;
-                case 2:
-                    bossHP=10;
-                    break;
-                case 3:
-                    bossHP=30;
-                    break;
-                case 4:
-                    bossHP=20;
-                    break;
-                default:
-                    bossHP=10;
-                    break;
+            for (var j = 0; j < bossHP; j++) {
+                bossHitPoints.push({
+                    pos: [1050 - 40 * j, 550],
+                    sprite: new Sprite(sprites, [40, 200], [40, 40])})
             }
-
-                for (var j = 0; j < bossHP; j++) {
-                    bossHitPoints.push({
-                        pos: [1050 - 40 * j, 550],
-                        sprite: new Sprite(sprites, [40, 200], [40, 40])})
-                }
         }
     }
     // backgroundSound();
@@ -477,7 +452,6 @@ document.addEventListener('touchend', function (event) {
 function BulletSound() {
     if (c.checked == true) {
         var audio = new Audio(); // Создаём новый элемент Audio
-        audio.volume=VOLUME_LEVEL;
         audio.src = 'resources/gun16.wav'; // Указываем путь к звуку "клика"
         audio.autoplay = true; // Автоматически запускаем
     }
@@ -486,7 +460,6 @@ function BulletSound() {
 function explSound() {
     if (c.checked == true) {
         var audio2 = new Audio(); // Создаём новый элемент Audio
-        audio2.volume=VOLUME_LEVEL;
         audio2.src = 'resources/Expl.wav'; // Указываем путь к звуку "клика"
         audio2.autoplay = true; // Автоматически запускаем
     }
@@ -496,7 +469,6 @@ function explSound() {
 function expl2Sound() {
     if (c.checked == true) {
         var audio4 = new Audio(); // Создаём новый элемент Audio
-        audio4.volume=VOLUME_LEVEL;
         audio4.src = 'resources/icq.mp3'; // Указываем путь к звуку "клика"
         audio4.autoplay = true; // Автоматически запускаем
     }
@@ -584,7 +556,10 @@ function updateEntities(dt) {
             if (hitPoints.length == 1) {
                 gameOver();
             }
+
+
             else {
+
                 var s = hitPoints.length;
                 hitPoints.pop();
             }
@@ -716,19 +691,18 @@ function render() {
     }
     if ((nextLevelPause) && (!nextLevelPlayerMove)) {
         switch (level) {
-            case 2:
-                ctx.drawImage(levelImg1, 0, 0, 1200, 620);
-            break;
-            case 3:
-                ctx.drawImage(levelImg2, 0, 0, 1200, 620);
+            case 1:
+                ctx.drawImage(level1Img, 0, 0, 1200, 620);
                 break;
-            case 4:
-                ctx.drawImage(levelImg3, 0, 0, 1200, 620);
+            case 2:
+                ctx.drawImage(level2Img, 0, 0, 1200, 620);
+                break;
+            case 3:
+                ctx.drawImage(level3Img, 0, 0, 1200, 620);
                 break;
             default:
                 break;
         }
-
 
     }
     // }
@@ -876,6 +850,7 @@ function checkCollisions() {
 
                     }
 
+
                     bossHitPoints.pop();
                     boss.pop();
                     bossTime = false;
@@ -883,7 +858,7 @@ function checkCollisions() {
                     nextLevelPause = true;
                     nextLevelPlayerMove = true;
                     nextLevelTimer = Date.now();
-                    score += 5000;
+                    score += 10000;
                     document.getElementById('sc').innerHTML = score;
                     break;
                 }
@@ -948,17 +923,12 @@ function nextLevel() {
     enemies = [];
     bullets = [];
     explosions = [];
-    clouds = [];
-    boss = [];
-    bossHitPoints = [];
-    blackPonies = [];
-    godBonuses = [];
-
 
     max = 100;
     level += 1;
     enemySpeed += 100;
     gameTime = 0;
+    bossTime = false;
     bossTime = false;
     nextLevelPlayerMove = false;
     bossInPosition = false;
@@ -971,11 +941,9 @@ function nextLevel() {
         case 3:
             background.src = "resources/bg4.png";
             break;
-        case 4:
-            background.src = "resources/bg5.png";
-            flag=2;
-            sprites.src = "resources/sprite2.png";
-            newyear_music();
+        case 5:
+            background.src = "resources/bg4.png";
+            sprites.src = "resources/nysprite.png";
             break;
         default:
             break;
@@ -990,7 +958,6 @@ function restart() {
     gameTime = 0;
     score = 0;
     level = 1;
-    flag=1;
     enemies = [];
     bullets = [];
     bossBullets = [];
@@ -1003,10 +970,7 @@ function restart() {
     bombs = [];
     blackPonies = [];
     bgScreens = [];
-    sprites.src = "resources/sprite.png";
     background.src = "resources/bg2.png";
-    pause_music();
-    reset_music();
     for (var j = 0; j < 2; j++) {//фоны
         bgScreens.push({
             pos: [0 + 2400 * j, 0],
@@ -1031,6 +995,7 @@ function restart() {
 
     godBonuses = [];
     player.pos = [50, canvas.height / 2];
+    bossTime = false;
     bossTime = false;
     nextLevelPlayerMove = false;
     bossInPosition = false;
